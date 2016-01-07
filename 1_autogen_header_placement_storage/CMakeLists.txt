@@ -96,7 +96,7 @@ function(genalign scoped_class generated_header_name)
   string(REGEX MATCH "[^:]*$" classname "${scoped_class}") # Get last component:
   #                                                        # If ${scoped_class} STREQUAL "AA::BB::CC";   then ${classname} is set to "CC"
 
-  string(CONCAT gen_prog     "gen_" "${generated_header_name}")
+  string(CONCAT gen_prog     "gen_" "${generated_header_name}" ".exe")
   string(CONCAT gen_prog_cpp "${gen_prog}" ".cpp")
 
   #message("###### \${scoped_class} == ${scoped_class}")

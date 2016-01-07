@@ -6,7 +6,8 @@
 
 #include "aligned_storer.h"
 
-void aligninfo_generator();
+void aligninfo_generator(); // friend function (in a generated executable called               build/gen_ab_impl_aligninfo.h.exe) used to access AB::AB_impl
+//                                                        That executable will generate header     build/ab_impl_aligninfo.h
 
 class AB {
 public:

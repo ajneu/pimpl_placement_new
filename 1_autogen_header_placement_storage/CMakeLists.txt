@@ -74,7 +74,17 @@ set(target go)
 ##############
 # Build and Link
 ##############
-add_executable(${target} ${src}             ${CMAKE_CURRENT_BINARY_DIR}/ab_impl_aligninfo.h) ## header-to-generate is a dependency!
+#
+# During development, you can set use      cmake -DNO_HEADER_GEN=1 ..   and set a real large Len value to satisfy the static_assert!
+# Afterwards: clean the build dir and use  cmake ..
+#
+
+if(NO_HEADER_GEN   AND NOT ${NO_HEADER_GEN} EQUAL 0) # cmake -DNO_HEADER_GEN=1 ..
+  # no header-generation
+  add_executable(${target} ${src})
+else()
+  add_executable(${target} ${src}             ${CMAKE_CURRENT_BINARY_DIR}/ab_impl_aligninfo.h) ## header-to-generate is a dependency!
+endif()
 target_link_libraries(${target} ${libs})
 
 
@@ -127,9 +137,13 @@ function(genalign scoped_class generated_header_name)
 endfunction()
 
 
-genalign(AB::AB_impl   ab_impl_aligninfo.h  ab.h ab.cpp)
-#        ^^^^^^^^^^^   ^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^
-#            |                  |                |
-#     For this class            |                |
-#                      Generate this header      |
-#                                          The class can be analyzed, by including these files into a cpp!
+if(NO_HEADER_GEN   AND NOT ${NO_HEADER_GEN} EQUAL 0) # cmake -DNO_HEADER_GEN=1 ..
+  # generate no header
+else()
+  genalign(AB::AB_impl   ab_impl_aligninfo.h  ab.h ab.cpp)
+  #        ^^^^^^^^^^^   ^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^
+  #            |                  |                |
+  #     For this class            |                |
+  #                      Generate this header      |
+  #                                          The class can be analyzed, by including these files into a cpp!
+endif()

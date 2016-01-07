@@ -3,7 +3,7 @@
 class AB {
 public:
    AB(int a, int b);
-
+   ~AB();
    int get_a()   const;
    int get_b()   const;
    int get_sum() const;

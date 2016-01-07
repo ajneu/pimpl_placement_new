@@ -5,18 +5,16 @@
 
 class AB::AB_impl {
 public:
-   AB_impl(int a, int b) : a{a}, b{b}, sum{a+b}
+   AB_impl(int a, int b) : a{a}, b{b}
    {  }
 
    int get_a() const { return a; }
    int get_b() const { return b; }
-   int get_sum() const { return sum; }
-   void inc_a_b()    { ++a; ++b; sum = a+b; }
+   void inc_a_b()    { ++a; ++b; }
    
 private:
    int a;
    int b;
-   int sum;
 };
 
 
@@ -25,9 +23,16 @@ private:
 AB::AB(int a, int b)
 {
    new(&storage_) AB_impl(a, b);
-   
+
+#ifndef ALIGNINFO_GENERATION_BUSY
    static_assert(storage_.Len   >= sizeof(           AB_impl),        "need to increase Len (in header)");
    static_assert(storage_.Align == std::alignment_of<AB_impl>::value, "need to adjust Align (in header)");
+#endif
+}
+
+AB::~AB()
+{
+   impl().~AB_impl();
 }
 
 int AB::get_a() const {
@@ -39,7 +44,7 @@ int AB::get_b() const {
 }
 
 int AB::get_sum() const {
-   return impl().get_sum();
+   return impl().get_a() + impl().get_b();
 }
 
 void AB::inc_a_b() {

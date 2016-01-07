@@ -28,6 +28,11 @@ AB::AB(int a, int b)
    static_assert(storage_.Align == std::alignment_of<AB_impl>::value, "need to adjust Align (in header)");
 }
 
+AB::~AB()
+{
+   impl().~AB_impl();
+}
+
 int AB::get_a() const {
    return impl().get_a();
 }

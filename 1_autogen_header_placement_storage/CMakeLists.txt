@@ -82,24 +82,54 @@ if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
   message(FATAL_ERROR "Because the header ab_impl_aligninfo.h will be GENERATED (with proper values, unlike that dummy-header with the same name in the source-dir), the binary-build-dir must be different from the source dir!")
 endif()
 
-##############
-# Generate Header (todo: should perhaps write a generic cmake-function for the following lines)
-##############
-add_executable(gen_aligninfo gen_aligninfo.cpp)
-
-add_custom_command (
-  OUTPUT                                          ${CMAKE_CURRENT_BINARY_DIR}/gen_ab_impl_aligninfo.cpp
-  COMMAND gen_aligninfo AB::AB_impl ab.h ab.cpp > ${CMAKE_CURRENT_BINARY_DIR}/gen_ab_impl_aligninfo.cpp
-  #                                 ^^^^^^^^^^^
-  #                                 found in . (i.e. ${CMAKE_CURRENT_SOURCE_DIR})
-  DEPENDS gen_aligninfo
-  )
 
 
-add_executable(gen_ab_impl_aligninfo              ${CMAKE_CURRENT_BINARY_DIR}/gen_ab_impl_aligninfo.cpp)
+#################
+# Generate Header
+#################
 
-add_custom_command (
-  OUTPUT                                   ${CMAKE_CURRENT_BINARY_DIR}/ab_impl_aligninfo.h
-  COMMAND gen_ab_impl_aligninfo >          ${CMAKE_CURRENT_BINARY_DIR}/ab_impl_aligninfo.h
-  DEPENDS gen_ab_impl_aligninfo
-  )
+
+add_executable(gen_aligninfo gen_aligninfo.cpp) # executable gen_aligninfo is used in function genalign (below)
+
+
+function(genalign scoped_class generated_header_name)
+  string(REGEX MATCH "[^:]*$" classname "${scoped_class}") # Get last component:
+  #                                                        # If ${scoped_class} STREQUAL "AA::BB::CC";   then ${classname} is set to "CC"
+
+  string(CONCAT gen_prog     "gen_" "${generated_header_name}")
+  string(CONCAT gen_prog_cpp "${gen_prog}" ".cpp")
+
+  #message("###### \${scoped_class} == ${scoped_class}")
+  #message("###### \${classname}    == ${classname}")
+  #message("###### \${gen_prog}     == ${gen_prog}")
+  #message("###### \${gen_prog_cpp} == ${gen_prog_cpp}")
+  #message("###### \${ARGN}         == ${ARGN}")
+
+
+
+  add_custom_command (
+    OUTPUT                                          ${CMAKE_CURRENT_BINARY_DIR}/${gen_prog_cpp}
+    COMMAND gen_aligninfo ${scoped_class} ${ARGN} > ${CMAKE_CURRENT_BINARY_DIR}/${gen_prog_cpp}
+    #                                     ^^^^^^^
+    #                                     found in . (i.e. ${CMAKE_CURRENT_SOURCE_DIR})
+    DEPENDS gen_aligninfo
+    )
+
+
+  add_executable(${gen_prog}                        ${CMAKE_CURRENT_BINARY_DIR}/${gen_prog_cpp})
+
+  add_custom_command (
+    OUTPUT                                          ${CMAKE_CURRENT_BINARY_DIR}/${generated_header_name}
+    COMMAND ${gen_prog} >                           ${CMAKE_CURRENT_BINARY_DIR}/${generated_header_name}
+    DEPENDS ${gen_prog}
+    )
+  
+endfunction()
+
+
+genalign(AB::AB_impl   ab_impl_aligninfo.h  ab.h ab.cpp)
+#        ^^^^^^^^^^^   ^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^
+#            |                  |                |
+#     For this class            |                |
+#                      Generate this header      |
+#                                          The class can be analyzed, by including these files into a cpp!

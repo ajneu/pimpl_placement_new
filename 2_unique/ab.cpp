@@ -20,7 +20,7 @@ private:
 
 // Interface
 AB::AB(int a, int b)
-    : impl_{/*static_cast<AB_impl *>(*/new(&storage_) AB_impl{a, b}/*)*/, [](AB_impl *p) {p->~AB_impl(); } }
+    : impl_{new(&storage_) AB_impl{a, b}, [](AB_impl *p) {p->~AB_impl(); } }
 {
     static_assert(storage_.Len   <= sizeof(           AB_impl),        "Too large!=>  1st template argument (Len1)   of Aligned_storer<Len1, Align1> storage_;");
     static_assert(storage_.Len   >= sizeof(           AB_impl),        "Too small!=>  1st template argument (Len1)   of Aligned_storer<Len1, Align1> storage_;");

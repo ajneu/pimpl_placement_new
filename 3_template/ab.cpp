@@ -3,23 +3,26 @@
 
 // Implementation
 
-class AB::AB_impl {
+
+template <typename T>
+class AB<T>::AB_impl {
 public:
-    AB_impl(int a, int b) : a{a}, b{b}
+    AB_impl(T a, T b) : a{a}, b{b}
     {  }
 
-    int get_a() const { return a; }
-    int get_b() const { return b; }
+    T get_a() const { return a; }
+    T get_b() const { return b; }
     void inc_a_b()    { a+=1; b+=1; }
    
 private:
-    int a;
-    int b;
+    T a;
+    T b;
 };
 
 
 // Interface
-AB::AB(int a, int b)
+template <typename T>
+AB<T>::AB(T a, T b)
 {
     static_assert(storage_.Len   <= sizeof(           AB_impl),        "Too large!=>  1st template argument (Len1)   of Aligned_storer<Len1, Align1> storage_;");
     static_assert(storage_.Len   >= sizeof(           AB_impl),        "Too small!=>  1st template argument (Len1)   of Aligned_storer<Len1, Align1> storage_;");
@@ -34,23 +37,34 @@ AB::AB(int a, int b)
     new(&storage_) AB_impl(a, b);
 }
 
-AB::~AB()
+template <typename T>
+AB<T>::~AB()
 {
     impl().~AB_impl();
 }
 
-int AB::get_a() const {
+template <typename T>
+T AB<T>::get_a() const {
     return impl().get_a();
 }
 
-int AB::get_b() const {
+template <typename T>
+T AB<T>::get_b() const {
     return impl().get_b();
 }
 
-int AB::get_sum() const {
+template <typename T>
+T AB<T>::get_sum() const {
     return impl().get_a() + impl().get_b();
 }
 
-void AB::inc_a_b() {
+template <typename T>
+void AB<T>::inc_a_b() {
     impl().inc_a_b();
 }
+
+
+// https://isocpp.org/wiki/faq/templates#separate-template-fn-defn-from-decl
+// template instantiation
+template class AB<int>;
+template class AB<long double>;

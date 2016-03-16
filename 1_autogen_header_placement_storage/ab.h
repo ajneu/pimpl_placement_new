@@ -22,24 +22,24 @@ void aligninfo_generator(); // friend function (in a generated executable called
 
 class AB {
 public:
-   AB(int a, int b);
-   ~AB();
-   int get_a()   const;
-   int get_b()   const;
-   int get_sum() const;
-   void inc_a_b();
+    AB(int a, int b);
+    ~AB();
+    int get_a()   const;
+    int get_b()   const;
+    int get_sum() const;
+    void inc_a_b();
 
 private:
 
-   // Implementation (well hidden!)
+    // Implementation (well hidden!)
    
-   Aligned_storer</*Len*/ aligninfo_Len_AB_impl, /*Align*/ aligninfo_Align_AB_impl > storage_;
-   class AB_impl;
+    Aligned_storer</*Len*/ aligninfo_Len_AB_impl, /*Align*/ aligninfo_Align_AB_impl > storage_;
+    class AB_impl;
    
-   AB_impl       &impl()       { return reinterpret_cast<AB_impl       &>(storage_); }
-   AB_impl const &impl() const { return reinterpret_cast<AB_impl const &>(storage_); }
+    AB_impl       &impl()       { return reinterpret_cast<AB_impl       &>(storage_); }
+    AB_impl const &impl() const { return reinterpret_cast<AB_impl const &>(storage_); }
 
-   friend void aligninfo_generator();
+    friend void aligninfo_generator();
 };
 
 #endif

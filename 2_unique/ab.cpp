@@ -20,6 +20,7 @@ private:
 
 // Interface
 AB::AB(int a, int b)
+    : impl_{/*static_cast<AB_impl *>(*/new(&storage_) AB_impl{a, b}/*)*/, [](AB_impl *p) {p->~AB_impl(); } }
 {
     static_assert(storage_.Len   <= sizeof(           AB_impl),        "Too large!=>  1st template argument (Len1)   of Aligned_storer<Len1, Align1> storage_;");
     static_assert(storage_.Len   >= sizeof(           AB_impl),        "Too small!=>  1st template argument (Len1)   of Aligned_storer<Len1, Align1> storage_;");
@@ -36,21 +37,20 @@ AB::AB(int a, int b)
 
 AB::~AB()
 {
-    impl().~AB_impl();
 }
 
 int AB::get_a() const {
-    return impl().get_a();
+    return impl_->get_a();
 }
 
 int AB::get_b() const {
-    return impl().get_b();
+    return impl_->get_b();
 }
 
 int AB::get_sum() const {
-    return impl().get_a() + impl().get_b();
+    return impl_->get_a() + impl_->get_b();
 }
 
 void AB::inc_a_b() {
-    impl().inc_a_b();
+    impl_->inc_a_b();
 }

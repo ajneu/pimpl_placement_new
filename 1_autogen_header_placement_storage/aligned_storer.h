@@ -7,10 +7,10 @@ template<std::size_t Len1, std::size_t Align1 /* default alignment not implement
 class Aligned_storer
 {
 public:
-   static constexpr std::size_t Len   = Len1;
-   static constexpr std::size_t Align = Align1;
+    static constexpr std::size_t Len   = Len1;
+    static constexpr std::size_t Align = Align1;
 private:
-   typename std::aligned_storage<Len1, Align1>::type storage;
+    typename std::aligned_storage<Len1, Align1>::type storage_;
 };
 
 #endif

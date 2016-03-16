@@ -1,3 +1,4 @@
+#include <memory>
 #include "aligned_storer.h"
 
 class AB {
@@ -15,7 +16,6 @@ private:
     
     Aligned_storer</*Len*/ 8, /*Align*/ 4> storage_;
     class AB_impl;
-    
-    AB_impl       &impl()       { return reinterpret_cast<AB_impl       &>(storage_); }
-    AB_impl const &impl() const { return reinterpret_cast<AB_impl const &>(storage_); }
+
+    std::unique_ptr<AB_impl, void(*)(AB_impl *)> impl_;
 };

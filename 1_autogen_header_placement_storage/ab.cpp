@@ -25,13 +25,13 @@ AB::AB(int a, int b)
     new(&storage_) AB_impl(a, b);
 
 #ifndef ALIGNINFO_GENERATION_BUSY
-    static_assert(storage_.Len   <= sizeof(           AB_impl),        "Too large!=>  1st template argument (Len1)   of Aligned_storer<Len1, Align1> storage_;");
-    static_assert(storage_.Len   >= sizeof(           AB_impl),        "Too small!=>  1st template argument (Len1)   of Aligned_storer<Len1, Align1> storage_;");
-    static_assert(storage_.Len   == sizeof(           AB_impl),        "Please adjust 1st template argument (Len1)   of Aligned_storer<Len1, Align1> storage_;");
+    static_assert(decltype(storage_)::Len   <= sizeof(           AB_impl),        "Too large!=>  1st template argument (Len1)   of Aligned_storer<Len1, Align1> storage_;");
+    static_assert(decltype(storage_)::Len   >= sizeof(           AB_impl),        "Too small!=>  1st template argument (Len1)   of Aligned_storer<Len1, Align1> storage_;");
+    static_assert(decltype(storage_)::Len   == sizeof(           AB_impl),        "Please adjust 1st template argument (Len1)   of Aligned_storer<Len1, Align1> storage_;");
 
-    static_assert(storage_.Align <= std::alignment_of<AB_impl>::value, "Too large!=>  2nd template argument (Align1) of Aligned_storer<Len1, Align1> storage_;");
-    static_assert(storage_.Align >= std::alignment_of<AB_impl>::value, "Too small!=>  2nd template argument (Align1) of Aligned_storer<Len1, Align1> storage_;");
-    static_assert(storage_.Align == std::alignment_of<AB_impl>::value, "Please adjust 2nd template argument (Align1) of Aligned_storer<Len1, Align1> storage_;");
+    static_assert(decltype(storage_)::Align <= std::alignment_of<AB_impl>::value, "Too large!=>  2nd template argument (Align1) of Aligned_storer<Len1, Align1> storage_;");
+    static_assert(decltype(storage_)::Align >= std::alignment_of<AB_impl>::value, "Too small!=>  2nd template argument (Align1) of Aligned_storer<Len1, Align1> storage_;");
+    static_assert(decltype(storage_)::Align == std::alignment_of<AB_impl>::value, "Please adjust 2nd template argument (Align1) of Aligned_storer<Len1, Align1> storage_;");
 
     static_assert(sizeof(storage_) == sizeof(         AB_impl), "Needs adjusting");
 #endif
